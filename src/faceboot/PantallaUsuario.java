@@ -1,16 +1,16 @@
 package faceboot;
 
-import com.mongodb.client.MongoCollection;
-import implementations.DocumentoRepositoryImpl;
+import entidades.Usuario;
+import implementations.UsuarioRepositoryImpl;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import javax.swing.table.DefaultTableModel;
-import org.bson.Document;
 import org.bson.types.ObjectId;
-import persistence.DocumentoRepository;
+import persistence.UsuarioRepository;
 
 /**
  *
@@ -19,9 +19,10 @@ import persistence.DocumentoRepository;
 public class PantallaUsuario extends javax.swing.JFrame {
 
     Faceboot fb;
+
     public PantallaUsuario(Faceboot fb) {
         initComponents();
-        this.fb=fb;
+        this.fb = fb;
         poblarTablaUsuarios();
 
     }
@@ -99,7 +100,7 @@ public class PantallaUsuario extends javax.swing.JFrame {
         labelPeliculas.setText("Peliculas Favoritas");
         jPanel1.add(labelPeliculas, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 310, -1, -1));
 
-        labelFecha.setText("Fecha de Nacimiento(dd/mm/yyyy)*");
+        labelFecha.setText("Fecha de Nacimiento(dd-mm-yyyy)*");
         jPanel1.add(labelFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 200, -1, -1));
         jPanel1.add(campoEdad, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 120, 113, -1));
         jPanel1.add(campoSexo, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 160, 113, -1));
@@ -136,7 +137,7 @@ public class PantallaUsuario extends javax.swing.JFrame {
         });
         jPanel1.add(botonEditar, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 350, -1, -1));
 
-        jLabel2.setText("Seleccione uno para editar y seleccione guardar, de lo contrario al no haber seleccion se creara uno nuevo:");
+        jLabel2.setText("Seleccione uno con la opcion editar para crear/actualizar/borrar");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 30, -1, -1));
 
         jLabel3.setText("Gustos Musicales");
@@ -170,6 +171,11 @@ public class PantallaUsuario extends javax.swing.JFrame {
         jPanel1.add(botonEliminarGenero, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 410, -1, -1));
 
         botonEliminarPelicula.setText("Eliminar");
+        botonEliminarPelicula.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonEliminarPeliculaActionPerformed(evt);
+            }
+        });
         jPanel1.add(botonEliminarPelicula, new org.netbeans.lib.awtextra.AbsoluteConstraints(1260, 410, -1, -1));
 
         jScrollPane4.setViewportView(listaGeneros);
@@ -193,7 +199,7 @@ public class PantallaUsuario extends javax.swing.JFrame {
                 botonEliminarActionPerformed(evt);
             }
         });
-        jPanel1.add(botonEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 350, -1, -1));
+        jPanel1.add(botonEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 350, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -269,93 +275,102 @@ public class PantallaUsuario extends javax.swing.JFrame {
         if (tablaUsuarios.getSelectedRow() < 0 || labelID.getText().equalsIgnoreCase("")) {
 
             if (!(campoNombre.getText().equals("")) && !(campoSexo.getText().equals("")) && !(campoEdad.getText().equals("")) && !(campoFecha.getText().equals(""))) {
-                DocumentoRepository dru = new DocumentoRepositoryImpl("usuarios");
-           
 
-                Document usuario = new Document()
-                      
-                        .append("nombre", campoNombre.getText())
-                        .append("edad", Integer.parseInt(campoEdad.getText()))
-                        .append("sexo", campoSexo.getText())
-                        .append("fecha_nacimiento", campoFecha.getText());
+                Usuario usuario = new Usuario();
+                usuario.setNombre(campoNombre.getText());
+                usuario.setEdad(Integer.parseInt(campoEdad.getText()));
+                usuario.setSexo(campoSexo.getText());
+                ObjectId id = new ObjectId();
+                usuario.setId(id);
+                
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDate fechaN = LocalDate.parse(campoFecha.getText(), formatter);
+                usuario.setFechaNacimiento(fechaN);
 
-                List<String> listaG = new ArrayList(listaGeneros.getModel().getSize());
+                ArrayList<String> listaG = new ArrayList(listaGeneros.getModel().getSize());
                 for (int i = 0; i < listaGeneros.getModel().getSize(); i++) {
                     listaG.add(listaGeneros.getModel().getElementAt(i));
                 }
                 if (!listaG.isEmpty()) {
-                    usuario.append("generos_musicales_favoritos", listaG);
+                    usuario.setGenerosMusicales(listaG);
                 }
 
-                List<String> listaP = new ArrayList(listaPeliculas.getModel().getSize());
+                ArrayList<String> listaP = new ArrayList(listaPeliculas.getModel().getSize());
                 for (int i = 0; i < listaPeliculas.getModel().getSize(); i++) {
                     listaP.add(listaPeliculas.getModel().getElementAt(i));
                 }
                 if (!listaP.isEmpty()) {
-                    usuario.append("peliculas_favoritas", listaP);
+                    usuario.setPeliculasFavoritas(listaP);
                 }
 
-             dru.commit(usuario);
+                UsuarioRepository ur = new UsuarioRepositoryImpl();
+                ur.commit(usuario);
 
             }
         } else {
-            DocumentoRepository dru = new DocumentoRepositoryImpl("usuarios");
+            if (!(campoNombre.getText().equals("")) && !(campoSexo.getText().equals("")) && !(campoEdad.getText().equals("")) && !(campoFecha.getText().equals(""))) {
 
-            Document usuario = new Document()
-                    .append("_id", new ObjectId(labelID.getText()))
-                    .append("nombre", campoNombre.getText())
-                    .append("edad", Integer.parseInt(campoEdad.getText()))
-                    .append("sexo", campoSexo.getText())
-                    .append("fecha_nacimiento", campoFecha.getText());
+                UsuarioRepository dru = new UsuarioRepositoryImpl();
 
-            List<String> listaG = new ArrayList(listaGeneros.getModel().getSize());
-            for (int i = 0; i < listaGeneros.getModel().getSize(); i++) {
-                listaG.add(listaGeneros.getModel().getElementAt(i));
+                Usuario usuario = dru.find(new ObjectId(labelID.getText()));
+                usuario.setNombre(campoNombre.getText());
+
+                usuario.setNombre(campoNombre.getText());
+                usuario.setEdad(Integer.parseInt(campoEdad.getText()));
+                usuario.setSexo(campoSexo.getText());
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                LocalDate fechaN = LocalDate.parse(campoFecha.getText(), formatter);
+                usuario.setFechaNacimiento(fechaN);
+
+                ArrayList<String> listaG = new ArrayList(listaGeneros.getModel().getSize());
+                for (int i = 0; i < listaGeneros.getModel().getSize(); i++) {
+                    listaG.add(listaGeneros.getModel().getElementAt(i));
+                }
+                if (!listaG.isEmpty()) {
+                    usuario.setGenerosMusicales(listaG);
+                }
+
+                ArrayList<String> listaP = new ArrayList(listaPeliculas.getModel().getSize());
+                for (int i = 0; i < listaPeliculas.getModel().getSize(); i++) {
+                    listaP.add(listaPeliculas.getModel().getElementAt(i));
+                }
+                if (!listaP.isEmpty()) {
+                    usuario.setPeliculasFavoritas(listaP);
+                }
+
+                dru.update(usuario);
+
+            } else {
+                JOptionPane.showMessageDialog(this, "No puede eliminar los valores obligatorios en una edición.");
             }
-            if (!listaG.isEmpty()) {
-                usuario.append("generos_musicales_favoritos", listaG);
-            }
-
-            List<String> listaP = new ArrayList(listaPeliculas.getModel().getSize());
-            for (int i = 0; i < listaPeliculas.getModel().getSize(); i++) {
-                listaP.add(listaPeliculas.getModel().getElementAt(i));
-            }
-            if (!listaP.isEmpty()) {
-                usuario.append("peliculas_favoritas", listaP);
-            }
-
-            dru.update(usuario);
-
         }
         poblarTablaUsuarios();
     }//GEN-LAST:event_botonGuardarActionPerformed
 
     private void botonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEditarActionPerformed
         if (tablaUsuarios.getSelectedRow() != (-1)) {
-            DocumentoRepository dru = new DocumentoRepositoryImpl("usuarios");
+            UsuarioRepository dru = new UsuarioRepositoryImpl();
             ObjectId id = (ObjectId) tablaUsuarios.getValueAt(tablaUsuarios.getSelectedRow(), 4);
-            Document usuario = dru.find(id);
-            labelID.setText(usuario.getObjectId("_id").toString());
-            campoNombre.setText(usuario.getString("nombre"));
-            campoEdad.setText(String.valueOf(usuario.getInteger("edad")));
-            campoSexo.setText(usuario.getString("sexo"));
+            Usuario usuario = dru.find(id);
 
-            campoFecha.setText(usuario.getString("fecha_nacimiento"));
-            List<String> listaGen = usuario.getList("generos_musicales_favoritos", String.class);
-            List<String> listaPel = usuario.getList("peliculas_favoritas", String.class);
+            labelID.setText(usuario.getId().toString());
+            campoNombre.setText(usuario.getNombre());
+            campoEdad.setText(String.valueOf(usuario.getEdad()));
+            campoSexo.setText(usuario.getSexo());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            campoFecha.setText(usuario.getFechaNacimiento().format(formatter));
+
             DefaultListModel modelo1 = new DefaultListModel();
             DefaultListModel modelo2 = new DefaultListModel();
-            if (listaGen != null && !listaGen.isEmpty()) {
-                for (int i = 0; i < listaGen.size(); i++) {
-                    modelo1.add(i, listaGen.get(i));
-                }
+            for (String generoMusicales : usuario.getGenerosMusicales()) {
+                modelo1.addElement(generoMusicales);
             }
-            if (listaPel != null && !listaPel.isEmpty()) {
+            for (String peliculaFavorita : usuario.getPeliculasFavoritas()) {
+                modelo2.addElement(peliculaFavorita);
+            }
 
-                for (int i = 0; i < listaPel.size(); i++) {
-                    modelo2.add(i, listaPel.get(i));
-                }
-            }
             listaGeneros.setModel(modelo1);
             listaPeliculas.setModel(modelo2);
 
@@ -363,39 +378,58 @@ public class PantallaUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_botonEditarActionPerformed
 
     private void botonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminarActionPerformed
-        if (tablaUsuarios.getSelectedRow() != (-1)) {
-            DocumentoRepository dru = new DocumentoRepositoryImpl("usuarios");
-            ObjectId id = (ObjectId) tablaUsuarios.getValueAt(tablaUsuarios.getSelectedRow(), 4);
-            Document usuario = dru.find(id);
-          
-            List<String> listaGen = usuario.getList("generos_musicales_favoritos", String.class);
-            List<String> listaPel = usuario.getList("peliculas_favoritas", String.class);
-            DefaultListModel modelo1 = new DefaultListModel();
-            DefaultListModel modelo2 = new DefaultListModel();
-            if (listaGen != null && !listaGen.isEmpty()) {
-                for (int i = 0; i < listaGen.size(); i++) {
-                    modelo1.add(i, listaGen.get(i));
-                }
-            }
-            if (listaPel != null && !listaPel.isEmpty()) {
+        if (tablaUsuarios.getSelectedRow() != (-1) && !labelID.getText().equals("")) {
 
-                for (int i = 0; i < listaPel.size(); i++) {
-                    modelo2.add(i, listaPel.get(i));
-                }
+            UsuarioRepository dru = new UsuarioRepositoryImpl();
+            Usuario usuario = dru.find(new ObjectId(tablaUsuarios.getValueAt(tablaUsuarios.getSelectedRow(), 4).toString()));
+            usuario.setNombre(campoNombre.getText());
+
+            usuario.setNombre(campoNombre.getText());
+            usuario.setEdad(Integer.parseInt(campoEdad.getText()));
+            usuario.setSexo(campoSexo.getText());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate fechaN = LocalDate.parse(campoFecha.getText(), formatter);
+            usuario.setFechaNacimiento(fechaN);
+
+            ArrayList<String> listaG = new ArrayList(listaGeneros.getModel().getSize());
+            for (int i = 0; i < listaGeneros.getModel().getSize(); i++) {
+                listaG.add(listaGeneros.getModel().getElementAt(i));
             }
-            listaGeneros.setModel(modelo1);
-            listaPeliculas.setModel(modelo2);
+            if (!listaG.isEmpty()) {
+                usuario.setGenerosMusicales(listaG);
+            }
+
+            ArrayList<String> listaP = new ArrayList(listaPeliculas.getModel().getSize());
+            for (int i = 0; i < listaPeliculas.getModel().getSize(); i++) {
+                listaP.add(listaPeliculas.getModel().getElementAt(i));
+            }
+            if (!listaP.isEmpty()) {
+                usuario.setPeliculasFavoritas(listaP);
+            }
             dru.delete(usuario);
             poblarTablaUsuarios();
         }
     }//GEN-LAST:event_botonEliminarActionPerformed
 
     private void botonCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCerrarActionPerformed
-     fb.setVisible(true);
-     this.setVisible(false);
+        fb.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_botonCerrarActionPerformed
 
-    public void poblarTablaUsuarios() {
+    private void botonEliminarPeliculaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminarPeliculaActionPerformed
+          if (listaPeliculas.getSelectedIndex() >= 0) {
+            ListModel m = listaPeliculas.getModel();
+            DefaultListModel<String> model = new DefaultListModel<>();
+            for (int i = 0; i < m.getSize(); i++) {
+                model.add(i, (String) m.getElementAt(i));
+            }
+            model.remove(listaPeliculas.getSelectedIndex());
+            listaPeliculas.setModel(model);
+        }
+    }//GEN-LAST:event_botonEliminarPeliculaActionPerformed
+
+    private void poblarTablaUsuarios() {
 
         DefaultTableModel tm = (DefaultTableModel) tablaUsuarios.getModel();
         int rowCount = tm.getRowCount();
@@ -404,52 +438,16 @@ public class PantallaUsuario extends javax.swing.JFrame {
             tm.removeRow(i);
 
         }
+        UsuarioRepository usure = new UsuarioRepositoryImpl();
 
-        DocumentoRepository usure = new DocumentoRepositoryImpl("usuarios");
+        ArrayList<Usuario> usuarios = usure.getAll();
+        DefaultTableModel tableModel;
 
-        ArrayList<ArrayList> lista = usure.getAll();
-        ArrayList<String> nombres = lista.get(0);
-        ArrayList<Integer> edades = lista.get(1);
-        ArrayList<String> sexos = lista.get(2);
-        ArrayList<String> fechasNacimiento = lista.get(3);
-        ArrayList<ObjectId> ids = lista.get(4);
-
-        Iterator<String> cn = nombres.iterator();
-        Iterator<Integer> ce = edades.iterator();
-        Iterator<String> cs = sexos.iterator();
-        Iterator<String> cf = fechasNacimiento.iterator();
-        Iterator<ObjectId> ci = ids.iterator();
-
-        DefaultTableModel tableModel = new DefaultTableModel();
-
-        List<String> listaNombres = new ArrayList<>();
-        while (cn.hasNext()) {
-            listaNombres.add(cn.next());
-        }
-
-        List<Integer> listaEdades = new ArrayList<>();
-        while (ce.hasNext()) {
-            listaEdades.add(ce.next());
-        }
-
-        List<String> listaSexos = new ArrayList<>();
-        while (cs.hasNext()) {
-            listaSexos.add(cs.next());
-        }
-
-        List<String> listaFechas = new ArrayList<>();
-        while (cf.hasNext()) {
-            listaFechas.add(cf.next());
-        }
-
-        List<ObjectId> listaIds = new ArrayList<>();
-        while (ci.hasNext()) {
-            listaIds.add(ci.next());
-        }
-
-        for (int i = 0; i < listaNombres.size(); i++) {
+        for (int i = 0; i < usuarios.size(); i++) {
             tableModel = (DefaultTableModel) tablaUsuarios.getModel();
-            Object[] objs = {listaNombres.get(i), listaEdades.get(i), listaSexos.get(i), listaFechas.get(i), listaIds.get(i)};
+            Object[] objs = {usuarios.get(i).getNombre(), usuarios.get(i).getEdad(),
+                usuarios.get(i).getSexo(), usuarios.get(i).getFechaNacimiento(),
+                usuarios.get(i).getId()};
             tableModel.addRow(objs);
         }
 

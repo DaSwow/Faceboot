@@ -1,13 +1,18 @@
 package faceboot;
 
-import implementations.DocumentoRepositoryImpl;
+import entidades.Post;
+import entidades.Usuario;
+import implementations.PostRepositoryImpl;
+import implementations.UsuarioRepositoryImpl;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
 import javax.swing.table.DefaultTableModel;
-import org.bson.Document;
 import org.bson.types.ObjectId;
-import persistence.DocumentoRepository;
+import persistence.PostRepository;
+import persistence.UsuarioRepository;
 
 public class PantallaPost extends javax.swing.JFrame {
 
@@ -16,6 +21,7 @@ public class PantallaPost extends javax.swing.JFrame {
     public PantallaPost(Faceboot fb) {
         initComponents();
         poblarTablaUsuarios();
+        poblarTablaPosts();
         this.fb = fb;
     }
 
@@ -43,12 +49,16 @@ public class PantallaPost extends javax.swing.JFrame {
         botonAgregarTag = new javax.swing.JButton();
         botonAgregarPost = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        listarPosts = new javax.swing.JButton();
         campoId = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaPosts = new javax.swing.JTable();
         botonBorrarPost = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        botonBorrarTag = new javax.swing.JButton();
+        botonVerTags = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -132,40 +142,72 @@ public class PantallaPost extends javax.swing.JFrame {
                 botonAgregarPostActionPerformed(evt);
             }
         });
-        jPanel1.add(botonAgregarPost, new org.netbeans.lib.awtextra.AbsoluteConstraints(1030, 420, -1, -1));
+        jPanel1.add(botonAgregarPost, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 440, -1, -1));
 
         jLabel8.setText("Posts del Usuario");
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, -1, -1));
 
-        jButton2.setText("Listar Posts de Este Usuario ↑");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, -1, -1));
+        listarPosts.setText("Listar Posts de Este Usuario ↑");
+        listarPosts.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listarPostsActionPerformed(evt);
+            }
+        });
+        jPanel1.add(listarPosts, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 180, -1, -1));
         jPanel1.add(campoId, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 110, 250, 20));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaPosts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Fecha", "Hora", "Mensaje"
+                "ID", "Fecha", "Hora", "Mensaje"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(jTable1);
+        jScrollPane3.setViewportView(tablaPosts);
 
-        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, -1, 300));
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 750, 300));
 
-        botonBorrarPost.setText("Borrar Post");
-        jPanel1.add(botonBorrarPost, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 410, -1, -1));
+        botonBorrarPost.setText("Borrar");
+        botonBorrarPost.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonBorrarPostActionPerformed(evt);
+            }
+        });
+        jPanel1.add(botonBorrarPost, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 420, -1, -1));
 
         jLabel9.setText("*Obligatorio");
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 590, -1, -1));
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 580, -1, -1));
+
+        jLabel10.setText("Seleccione el post a borrar");
+        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 390, -1, -1));
+
+        botonBorrarTag.setText("Borrar Tag");
+        botonBorrarTag.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonBorrarTagActionPerformed(evt);
+            }
+        });
+        jPanel1.add(botonBorrarTag, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 390, -1, -1));
+
+        botonVerTags.setText("Ver ");
+        botonVerTags.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonVerTagsActionPerformed(evt);
+            }
+        });
+        jPanel1.add(botonVerTags, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 280, -1, -1));
+
+        jLabel11.setText("Seleccione un Post y despues en Ver para ver sus Tags");
+        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 280, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -198,25 +240,102 @@ public class PantallaPost extends javax.swing.JFrame {
     }//GEN-LAST:event_botonCerrarActionPerformed
 
     private void botonAgregarPostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAgregarPostActionPerformed
-        if (!campoId.getText().equalsIgnoreCase("") && !campoNombreUsuario.getText().equalsIgnoreCase("") && !campoMensaje.getText().equalsIgnoreCase("")) {
+        if (!campoId.getText().equalsIgnoreCase("") && !campoMensaje.getText().equalsIgnoreCase("")) {
 
-            DocumentoRepository reu = new DocumentoRepositoryImpl("usuarios");
-            DocumentoRepository rep = new DocumentoRepositoryImpl("posts");
+            PostRepository rp = new PostRepositoryImpl();
 
-          
+            Post post = new Post();
 
+            post.setUsuario(new ObjectId(campoId.getText()));
+            post.setMensaje(campoMensaje.getText());
+            post.setHora(LocalTime.now());
+            post.setFecha(LocalDate.now());
+            ObjectId id = new ObjectId();
+            post.setId(id);
+            ArrayList<String> listaG = new ArrayList(listaTags.getModel().getSize());
+            for (int i = 0; i < listaTags.getModel().getSize(); i++) {
+                listaG.add(listaTags.getModel().getElementAt(i));
+            }
+            if (!listaG.isEmpty()) {
+                post.setTags(listaG);
+            }
+            rp.commit(post);
+
+            //Agregar post al usuario
+            UsuarioRepository ru = new UsuarioRepositoryImpl();
+            Usuario usuario = ru.find(new ObjectId(campoId.getText()));
+            ArrayList<String> userPosts = usuario.getPosts();
+            userPosts.add(id.toString());
+            usuario.setPosts(userPosts);
+            ru.update(usuario);
+
+            poblarTablaPosts();
         }
     }//GEN-LAST:event_botonAgregarPostActionPerformed
 
     private void botonAgregarTagActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAgregarTagActionPerformed
-        if (!campoTag.equals("")) {
-            
-            
-            
+        if (!campoTag.getText().equals("")) {
+            DefaultListModel<String> model = new DefaultListModel<>();
+            ListModel m = listaTags.getModel();
+            if (m.getSize() == 0) {
+                model.add(0, campoTag.getText());
+            } else {
+                for (int i = 0; i < m.getSize(); i++) {
+                    model.add(i, (String) m.getElementAt(i));
+                    if ((i + 1) == model.getSize()) {
+                        model.add(i + 1, campoTag.getText());
+                    }
+                }
+            }
+            listaTags.setModel(model);
         }
     }//GEN-LAST:event_botonAgregarTagActionPerformed
 
-    public void poblarTablaUsuarios() {
+    private void listarPostsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listarPostsActionPerformed
+        poblarTablaPosts();
+
+
+    }//GEN-LAST:event_listarPostsActionPerformed
+
+    private void botonBorrarPostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBorrarPostActionPerformed
+        if (tablaPosts.getSelectedRow() != (-1)) {
+            PostRepository rp = new PostRepositoryImpl();
+            Post post = rp.find(new ObjectId(tablaPosts.getValueAt(tablaUsuarios.getSelectedRow(), 0).toString()));
+            rp.delete(post);
+
+            poblarTablaPosts();
+        }
+    }//GEN-LAST:event_botonBorrarPostActionPerformed
+
+    private void botonBorrarTagActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBorrarTagActionPerformed
+        if (listaTags.getSelectedIndex() >= 0) {
+            ListModel m = listaTags.getModel();
+            DefaultListModel<String> model = new DefaultListModel<>();
+            for (int i = 0; i < m.getSize(); i++) {
+                model.add(i, (String) m.getElementAt(i));
+            }
+            model.remove(listaTags.getSelectedIndex());
+            listaTags.setModel(model);
+        }
+
+    }//GEN-LAST:event_botonBorrarTagActionPerformed
+
+    private void botonVerTagsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonVerTagsActionPerformed
+        if (tablaPosts.getSelectedRow() != (-1)) {
+            DefaultListModel modelo1 = new DefaultListModel();
+            PostRepository rp = new PostRepositoryImpl();
+
+            Post post = rp.find(new ObjectId(tablaPosts.getValueAt(tablaPosts.getSelectedRow(), 0).toString()));
+
+            for (String tags : post.getTags()) {
+                modelo1.addElement(tags);
+            }
+
+            listaTags.setModel(modelo1);
+        }
+    }//GEN-LAST:event_botonVerTagsActionPerformed
+
+    private void poblarTablaUsuarios() {
         DefaultTableModel tm = (DefaultTableModel) tablaUsuarios.getModel();
         int rowCount = tm.getRowCount();
         for (int i = rowCount - 1; i >= 0; i--) {
@@ -225,32 +344,41 @@ public class PantallaPost extends javax.swing.JFrame {
 
         }
 
-        DocumentoRepository usure = new DocumentoRepositoryImpl("usuarios");
+        UsuarioRepository ru = new UsuarioRepositoryImpl();
 
-        ArrayList<ArrayList> lista = usure.getAll();
-        ArrayList<String> nombres = lista.get(0);
+        ArrayList<Usuario> users = ru.getAll();
 
-        ArrayList<ObjectId> ids = lista.get(4);
-
-        Iterator<String> cn = nombres.iterator();
-        Iterator<ObjectId> ci = ids.iterator();
-
-        DefaultTableModel tableModel = new DefaultTableModel();
-
-        List<String> listaNombres = new ArrayList<>();
-        while (cn.hasNext()) {
-            listaNombres.add(cn.next());
+        for (int i = 0; i < users.size(); i++) {
+            tm = (DefaultTableModel) tablaUsuarios.getModel();
+            Object[] objs = {users.get(i).getId().toString(), users.get(i).getNombre()};
+            tm.addRow(objs);
         }
+    }
 
-        List<ObjectId> listaIds = new ArrayList<>();
-        while (ci.hasNext()) {
-            listaIds.add(ci.next());
-        }
+    private void poblarTablaPosts() {
+        if (!campoId.getText().equalsIgnoreCase("")) {
 
-        for (int i = 0; i < listaNombres.size(); i++) {
-            tableModel = (DefaultTableModel) tablaUsuarios.getModel();
-            Object[] objs = {listaIds.get(i), listaNombres.get(i)};
-            tableModel.addRow(objs);
+            DefaultTableModel tm = (DefaultTableModel) tablaPosts.getModel();
+            int rowCount = tm.getRowCount();
+            for (int i = rowCount - 1; i >= 0; i--) {
+
+                tm.removeRow(i);
+
+            }
+
+            PostRepository rp = new PostRepositoryImpl();
+            UsuarioRepository ru = new UsuarioRepositoryImpl();
+
+            Usuario usuario = ru.find(new ObjectId(campoId.getText()));
+
+            ArrayList<Post> posts = rp.getAllFromUser(usuario);
+
+            for (int i = 0; i < posts.size(); i++) {
+                tm = (DefaultTableModel) tablaPosts.getModel();
+                Object[] objs = {posts.get(i).getId().toString(), posts.get(i).getFecha(), posts.get(i).getHora(), posts.get(i).getMensaje()};
+                tm.addRow(objs);
+            }
+
         }
     }
 
@@ -259,14 +387,17 @@ public class PantallaPost extends javax.swing.JFrame {
     private javax.swing.JButton botonAgregarPost;
     private javax.swing.JButton botonAgregarTag;
     private javax.swing.JButton botonBorrarPost;
+    private javax.swing.JButton botonBorrarTag;
     private javax.swing.JButton botonCerrar;
     private javax.swing.JButton botonSeleccionarUsuario;
+    private javax.swing.JButton botonVerTags;
     private javax.swing.JLabel campoId;
     private javax.swing.JTextField campoMensaje;
     private javax.swing.JTextField campoNombreUsuario;
     private javax.swing.JTextField campoTag;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -279,8 +410,9 @@ public class PantallaPost extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JList<String> listaTags;
+    private javax.swing.JButton listarPosts;
+    private javax.swing.JTable tablaPosts;
     private javax.swing.JTable tablaUsuarios;
     // End of variables declaration//GEN-END:variables
 }

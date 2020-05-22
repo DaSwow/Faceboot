@@ -2,6 +2,7 @@
 package persistence;
 
 import java.util.ArrayList;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 /**
@@ -20,7 +21,7 @@ public interface Repository<T> {
     void commit(T entity);
 
 
-    ArrayList<ArrayList> getAll();
+    ArrayList<T> getAll();
     
     
 

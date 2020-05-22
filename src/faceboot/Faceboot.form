@@ -44,10 +44,17 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="botonCerrarPrograma" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="botonComentarios" min="-2" max="-2" attributes="0"/>
+                      <Component id="botonTags" min="-2" max="-2" attributes="0"/>
+                      <Component id="botonComentairos" min="-2" max="-2" attributes="0"/>
+                      <Component id="botonPosts" min="-2" max="-2" attributes="0"/>
                       <Component id="botonUsuario" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="89" max="32767" attributes="0"/>
@@ -57,11 +64,17 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                   <Component id="botonUsuario" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                  <Component id="botonComentarios" min="-2" pref="25" max="-2" attributes="0"/>
-                  <EmptySpace pref="126" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="botonPosts" min="-2" pref="25" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="botonComentairos" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="botonTags" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="72" max="32767" attributes="0"/>
+                  <Component id="botonCerrarPrograma" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -69,18 +82,42 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="botonUsuario">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Manegar Usuarios"/>
+            <Property name="text" type="java.lang.String" value="Manejar Usuarios"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonUsuarioActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="botonComentarios">
+        <Component class="javax.swing.JButton" name="botonPosts">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Manejar Posts"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonPostsActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="botonCerrarPrograma">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Cerrar Programa"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonCerrarProgramaActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="botonComentairos">
           <Properties>
             <Property name="text" type="java.lang.String" value="Manejar Comentarios"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonComentariosActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonComentairosActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="botonTags">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Buscar Posts por Tag"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonTagsActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

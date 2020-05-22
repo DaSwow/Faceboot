@@ -4,10 +4,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/carls/Desktop/Faceboot/src/faceboot/Faceboot.java</file>
+            <file>file:/C:/Users/carls/Desktop/Faceboot/src/implementations/UsuarioRepositoryImpl.java</file>
+            <file>file:/C:/Users/carls/Desktop/Faceboot/src/implementations/PostRepositoryImpl.java</file>
             <file>file:/C:/Users/carls/Desktop/Faceboot/src/faceboot/PantallaPost.java</file>
-            <file>file:/C:/Users/carls/Desktop/Faceboot/src/implementations/DocumentoRepositoryImpl.java</file>
-            <file>file:/C:/Users/carls/Desktop/Faceboot/src/persistence/DocumentoRepository.java</file>
+            <file>file:/C:/Users/carls/Desktop/Faceboot/src/faceboot/PantallaComentario.java</file>
             <file>file:/C:/Users/carls/Desktop/Faceboot/src/faceboot/PantallaUsuario.java</file>
+            <file>file:/C:/Users/carls/Desktop/Faceboot/src/persistence/PostRepository.java</file>
         </group>
     </open-files>
 </project-private>

@@ -120,7 +120,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="labelFecha">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Fecha de Nacimiento(dd/mm/yyyy)*"/>
+            <Property name="text" type="java.lang.String" value="Fecha de Nacimiento(dd-mm-yyyy)*"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -244,7 +244,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Seleccione uno para editar y seleccione guardar, de lo contrario al no haber seleccion se creara uno nuevo:"/>
+            <Property name="text" type="java.lang.String" value="Seleccione uno con la opcion editar para crear/actualizar/borrar"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -315,6 +315,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Eliminar"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonEliminarPeliculaActionPerformed"/>
+          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="1260" y="410" width="-1" height="-1"/>
@@ -405,7 +408,7 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="280" y="350" width="-1" height="-1"/>
+              <AbsoluteConstraints x="290" y="350" width="-1" height="-1"/>
             </Constraint>
           </Constraints>
         </Component>
